@@ -1,0 +1,107 @@
+<!DOCTYPE html> 
+<html>
+  <head>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#00ff00">
+<link rel="icon" href="icon.png" type="image/png">
+
+    <title>wifi room</title>
+    
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log("✅ Service Worker registered"))
+      .catch((err) => console.error("❌ SW Error:", err));
+  }
+</script>
+
+  </head>
+  <style>
+    body {
+      background-color: #000000;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      
+    }
+    h1 {
+      color: #ffffff;
+    }
+    .button {
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      background-color: #007BFF;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .button:hover {
+
+      background-color: #0056b3;
+      transition: background-color 0.5s ease;
+      box-shadow: #0069da 0px 0px 55px;
+    }
+    .button:active {
+      background-color: #004085;
+      box-shadow: #0056b3 0px 0px 55px;
+    }
+.button2{
+      padding: 10px 20px;
+      font-size: 16px;
+      color: white;
+      background-color: #28a745;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      top: 25px;
+      position: relative;
+    }
+    .button2:hover {
+      background-color: #218838;
+      transition: background-color 0.5s ease;
+      box-shadow: #1e7e34 0px 0px 55px;
+    }
+    .button2:active {
+      background-color: #155724;
+      box-shadow: #1e7e34 0px 0px 55px;
+}
+   </style>
+  <body>
+    <h1>Welcome to the WiFi Room</h1>
+     
+    <div>
+      <button class="button" onclick="location.href='wifi2.html'">start room</button>
+    </div>
+    <div>
+      <button class="button2" onclick="location.href='wifi3.html'">join room</button>
+    </div>
+      <script type="module">
+  // Firebase App (core)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getDatabase, ref, push, set, onChildAdded, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "YOUR_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "XXX",
+    appId: "XXX"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  window.db = db;
+  window.ref = ref;
+  window.push = push;
+  window.set = set;
+  window.onChildAdded = onChildAdded;
+  window.remove = remove;
+</script>
+  </body>
+
+
+</html>

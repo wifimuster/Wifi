@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>صفحة الإرسال</title>
+  <style>
+    body {
+      background: linear-gradient(270deg, #000000, #000000, #000000);
+      background-size: 600% 600%;
+      animation: rainbowBG 20s ease infinite;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    @keyframes rainbowBG {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    header {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #28a745;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px #00ffc3, 0 0 20px #00ffc3;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 20px #00ffc3, 0 0 40px #00ffc3;
+      background-color: #00ffc3;
+      color: black;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      box-shadow: 0 0 10px #000;
+      z-index: 10;
+    }
+
+    .popup input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .messages {
+      padding: 100px 20px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      background-color: #222;
+      padding: 10px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .message span {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <button onclick="togglePopup()">إرسال</button>
+</header>
+
+<div class="popup" id="popup">
+   <input id="msgContent" placeholder="اكتب الرسالة">
+    
+
+  <button onclick="sendMessage()">تأكيد</button>
+ 
+</div>
+
+<div class="messages" id="messages"></div>
+<script>
+const channel = new BroadcastChannel('orders_channel');
+
+function togglePopup() {
+  const popup = document.getElementById("popup");
+  popup.style.display = popup.style.display === "block" ? "none" : "block";
+}
+
+function sendMessage() {
+  const input = document.getElementById("msgContent");
+  const msg = input.value.trim();
+  if (!msg) {
+    alert("من فضلك اكتب رسالة.");
+    return;
+  }
+
+  const messageDiv = createMessage(msg);
+  document.getElementById("messages").appendChild(messageDiv);
+
+  // تخزين في localStorage
+  let messages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
+  messages.push(msg);
+  localStorage.setItem("chatMessages", JSON.stringify(messages));
+
+  // إرسال الرسالة للصفحة التانية
+  channel.postMessage(msg);
+
+  input.value = "";
+  document.getElementById("popup").style.display = "none";
+}
+
+function createMessage(text) {
+  const div = document.createElement("div");
+  div.className = "message";
+
+  const span = document.createElement("span");
+  span.textContent = text;
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "🗑️";
+  deleteBtn.className = "deleteBtn";
+  deleteBtn.onclick = () => {
+    div.remove();
+    let messages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
+    messages = messages.filter(m => m !== text);
+    localStorage.setItem("chatMessages", JSON.stringify(messages));
+  };
+
+  div.appendChild(span);
+  div.appendChild(deleteBtn);
+  return div;
+}
+
+// تحميل الرسائل القديمة
+window.onload = function () {
+  const messages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
+  messages.forEach(msg => {
+    const messageDiv = createMessage(msg);
+    document.getElementById("messages").appendChild(messageDiv);
+  });
+};
+
+// استقبال الرسائل من الطرف التاني
+channel.onmessage = (e) => {
+  const messageDiv = createMessage(e.data);
+  document.getElementById("messages").appendChild(messageDiv);
+
+  let messages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
+  messages.push(e.data);
+  localStorage.setItem("chatMessages", JSON.stringify(messages));
+};
+</script>
+
+
+</body>
+</html>

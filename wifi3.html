@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>صفحة الإرسال</title>
+  <style>
+    body {
+      background: linear-gradient(270deg, #000000, #000000, #000000);
+      background-size: 600% 600%;
+      animation: rainbowBG 20s ease infinite;
+      color: #fff;
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    @
+
+    header {
+      position: fixed;
+      top: 10px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+  
+    .popup {
+      display: none;
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      background-color: #333;
+      padding: 20px;
+      border-radius: 10px;
+      width: 250px;
+      box-shadow: 0 0 10px #000;
+      z-index: 10;
+    }
+
+    .popup input {
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    .messages {
+      padding: 100px 20px 100px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .message {
+      background-color: #222;
+      padding: 10px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .message span {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+ 
+
+<div class="messages" id="messages"></div>
+<script>
+const channel = new BroadcastChannel('orders_channel');
+
+channel.onmessage = function (event) {
+  const msg = event.data;
+  const div = document.createElement("div");
+  div.className = "message";
+  div.textContent = `Gost 1: ${msg}`;
+  document.getElementById("messages").appendChild(div);
+};
+
+// تحميل الرسائل المخزنة لو فيه
+window.onload = function () {
+  const messages = JSON.parse(localStorage.getItem("chatMessages") || "[]");
+  messages.forEach(msg => {
+    const messageDiv = document.createElement("div");
+    messageDiv.className = "message";
+    messageDiv.textContent = `Gost 1: ${msg}`;
+    document.getElementById("messages").appendChild(messageDiv);
+  });
+};
+</script>
+
+
+
+</body>
+</html>
